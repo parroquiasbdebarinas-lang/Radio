@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Socket.io Client (Para el chat) -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <!-- jQuery y Estilos del Reproductor -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js" id="jquery-core-js"></script>
+    <link href="https://extassisnetwork.com/player/Luna2/luna.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 
@@ -30,14 +33,18 @@
     </nav>
 
     <!-- Sección Principal (Hero) -->
-    <header class="hero">
-        <div class="hero-content">
+    <header class="hero" style="display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap;">
+        <div class="hero-content" style="flex: 1; min-width: 300px; text-align: left;">
             <span class="badge">EN VIVO 🔴</span>
             <span class="listener-badge"><i class="fas fa-users"></i> Oyentes: <span id="user-count">0</span></span>
             <h1>La Voz de la Fe <br> en Santa Barbara</h1>
             <p>Transmitiendo esperanza y oración desde la Parroquia Santa Bárbara.</p>
             <!-- Este botón también activa el reproductor -->
             <button class="btn-main" onclick="document.getElementById('radio-player').scrollIntoView({behavior: 'smooth'})">ESCUCHAR AHORA</button>
+        </div>
+        <!-- Reproductor de Radio -->
+        <div id="radio-player" style="display: flex; justify-content: center;">
+            <div class="extassis" id="extassis" style="width: 400px; height:400px; -webkit-border-top-left-radius: 0px; -webkit-border-top-right-radius: 0px; -webkit-border-bottom-right-radius: 0px; -webkit-border-bottom-left-radius: 0px; -moz-border-radius-topleft: 0px; -moz-border-radius-topright: 0px; -moz-border-radius-bottomright: 0px; -moz-border-radius-bottomleft: 0px; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; border: none;" data-userinterface="big" data-backgroundcolor="linear-gradient(135deg, rgba(0, 0, 0, 0.3) 100%, rgba(255, 255, 255, 0.3) 0%)" data-fontcolor="#ffffff" data-hightlightcolor="#ff0000" data-fontname="Montserrat" data-googlefont="Montserrat" data-fontratio="0.4" data-radioname="Radio Santa Bárbara" data-scroll="true" data-coverimage="assets/images/logo/logo.png" data-onlycoverimage="true" data-coverstyle="animated" data-usevisualizer="real" data-visualizertype="6" data-metadatatechnic="corsproxy" data-corsproxy="" data-usestreamcorsproxy="true" data-streamurl="http://serverstreamgroup.biz:2020/AudioPlayer/9736?mount=&" data-streamtype="shoutcast2" data-shoutcastpath="/live" data-shoutcastid="1" data-metadatainterval="20000" data-volume="100" data-autoplay="true" data-displayliveicon="true" data-debug="false" data-multicolorvisualizer="true" data-color1="#ff0000" data-color2="#06ff00" data-color3="#fff600" data-color4="#0054ff" data-visualizeropacity="0.9" data-displayvisualizericon="true"> </div>
         </div>
     </header>
 
@@ -140,11 +147,6 @@
         </div>
     </section>
 
-    <!-- Reproductor Fijo (Audio Player) -->
-    <div class="player-container" id="radio-player">
-        <iframe title="Reproductor de Radio Tropirumba Stereo" src="https://serverstreamgroup.biz:2020/AudioPlayer/9736?mount=&amp;" class="radio-iframe"></iframe>
-    </div>
-
     <!-- Barra de Navegación Móvil -->
     <nav class="mobile-nav">
         <a href="#" class="mobile-nav-link active">
@@ -164,6 +166,12 @@
             <span>Contacto</span>
         </a>
     </nav>
+
+    <!-- Scripts del Reproductor -->
+    <script> $radioURL = "https://serverstreamgroup.biz:2020/AudioPlayer/9736?mount=&"; var animationactive = 0; var songMem = new Array(); var ShowAlbumCover = true; </script>
+    <script src="https://extassisnetwork.com/player/Luna2/luna.js"></script>
+    <script src="https://extassisnetwork.com/player/Luna2/luna2.js"></script>
+    <script src="https://extassisnetwork.com/player/Luna2/luna3.js"></script>
 
     <!-- Vinculamos tu lógica de JavaScript -->
     <script src="assets/js/script.js"></script>

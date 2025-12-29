@@ -30,7 +30,7 @@ if (chatForm) {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     
     // IMPORTANTE: Cuando subas el backend a Render, copia la URL que te den y pégala aquí abajo 👇
-    const productionUrl = 'https://TU-APP-EN-RENDER.onrender.com'; 
+    const productionUrl = 'https://backend-8o1z.onrender.com'; 
 
     const socket = io(isLocal ? undefined : productionUrl); 
     // ---------------------------------

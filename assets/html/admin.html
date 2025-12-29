@@ -72,6 +72,19 @@
         .report-meta { font-size: 0.8rem; color: #888; }
 
         .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); z-index: 1000; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+
+        /* Modal Styles */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-box { background: #1e1e1e; padding: 25px; border-radius: 10px; border: 1px solid #333; width: 400px; max-width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .modal-header { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: var(--light); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { display: flex; flex-direction: column; gap: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 0.85rem; color: #aaa; }
+        .form-row { display: flex; gap: 10px; }
+        .modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+        .input-dark { background: #121212; border: 1px solid #333; color: white; padding: 10px; border-radius: 5px; }
+        .btn-cancel { background: transparent; border: 1px solid #555; color: #ccc; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .btn-confirm { background: var(--primary); border: none; color: white; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -152,9 +165,42 @@
         </div>
     </div>
 
+    <!-- Modal de Sanción -->
+    <div id="ban-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span id="modal-title">Sancionar Usuario</span>
+                <i class="fas fa-times" style="cursor:pointer;" onclick="closeModal()"></i>
+            </div>
+            <div class="modal-body">
+                <div id="time-options">
+                    <div class="form-group">
+                        <label>Duración</label>
+                        <div class="form-row">
+                            <input type="number" id="ban-time" class="input-dark" value="1" min="1" style="flex:1;">
+                            <select id="ban-unit" class="input-dark" style="width: 120px;">
+                                <option value="minutes">Minutos</option>
+                                <option value="hours">Horas</option>
+                                <option value="seconds">Segundos</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Razón de la sanción</label>
+                    <textarea id="ban-reason" class="input-dark" rows="3" placeholder="Ej: Spam, Insultos..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn-confirm" onclick="confirmBan()">Aplicar Sanción</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- Lógica del Admin ---
-        const socket = io(); // Conectar al servidor
+        const socket = io('https://backend-8o1z.onrender.com'); // Conectar al servidor
         let allMessages = []; // Copia local para filtrar
 
         // 1. Login Simple (Cliente)
@@ -276,20 +322,74 @@
             }
         }
 
+        // --- Modal Logic ---
+        let currentBanId = null;
+        let isPermanent = false;
+
+        function openModal(id, permanent) {
+            currentBanId = id;
+            isPermanent = permanent;
+            const modal = document.getElementById('ban-modal');
+            const title = document.getElementById('modal-title');
+            const timeOptions = document.getElementById('time-options');
+            
+            modal.style.display = 'flex';
+            
+            if (permanent) {
+                title.innerText = "Bloqueo Permanente";
+                title.style.color = "#ff4757";
+                timeOptions.style.display = 'none';
+            } else {
+                title.innerText = "Suspensión Temporal";
+                title.style.color = "#ffa502";
+                timeOptions.style.display = 'block';
+            }
+            
+            document.getElementById('ban-reason').value = ''; // Reset reason
+            document.getElementById('ban-reason').focus();
+        }
+
+        window.closeModal = function() {
+            document.getElementById('ban-modal').style.display = 'none';
+            currentBanId = null;
+        }
+
+        window.confirmBan = function() {
+            if (!currentBanId) return;
+            
+            const reason = document.getElementById('ban-reason').value || "Sin razón especificada";
+            
+            if (isPermanent) {
+                if(confirm('¿Estás seguro de bloquear permanentemente a este usuario?')) {
+                    socket.emit('admin ban user', { msgId: currentBanId, reason: reason });
+                    closeModal();
+                }
+            } else {
+                const time = document.getElementById('ban-time').value;
+                const unit = document.getElementById('ban-unit').value;
+                
+                if (time > 0) {
+                    socket.emit('admin temp ban', { 
+                        msgId: currentBanId, 
+                        time: time, 
+                        unit: unit, 
+                        reason: reason 
+                    });
+                    closeModal();
+                } else {
+                    alert("Por favor ingresa un tiempo válido.");
+                }
+            }
+        }
+
         // Baneo Temporal
         window.tempBanUser = function(id) {
-            const minutes = prompt("¿Por cuántos MINUTOS quieres suspender a este usuario?", "60");
-            if(minutes && !isNaN(minutes)) {
-                socket.emit('admin temp ban', { msgId: id, minutes: parseInt(minutes) });
-                alert("Usuario suspendido temporalmente.");
-            }
+            openModal(id, false);
         }
 
         // Banear usuario
         window.banUser = function(id) {
-            if(confirm('¿BLOQUEAR a este usuario permanentemente por su IP?')) {
-                socket.emit('admin ban user', id);
-            }
+            openModal(id, true);
         }
 
         // Borrar todo
