@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Radio Santa Bárbara</title>
+    <link rel="icon" href="../images/logo/logo.png" type="image/png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        :root { --sidebar-width: 250px; --header-height: 60px; }
+        body { margin: 0; padding: 0; background: #121212; color: #eee; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar */
+        .sidebar { width: var(--sidebar-width); background: #1e1e1e; border-right: 1px solid #333; display: flex; flex-direction: column; padding: 20px; }
+        .sidebar-header { font-size: 1.2rem; font-weight: bold; color: var(--primary); margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        .menu-item { padding: 12px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s; color: #aaa; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .menu-item:hover, .menu-item.active { background: rgba(255, 71, 87, 0.1); color: var(--primary); }
+        .menu-item i { width: 20px; text-align: center; }
+        
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; background: #121212; }
+        
+        /* Header */
+        .top-header { height: var(--header-height); border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; background: #1e1e1e; }
+        .status-badge { background: #2ecc71; color: #000; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .status-badge.offline { background: #e74c3c; color: white; }
+        
+        /* Dashboard Grid */
+        .dashboard-container { padding: 30px; overflow-y: auto; flex: 1; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: #1e1e1e; padding: 20px; border-radius: 10px; border: 1px solid #333; }
+        .stat-card h3 { font-size: 0.9rem; color: #888; margin-bottom: 10px; }
+        .stat-card .value { font-size: 2rem; font-weight: bold; color: var(--light); }
+        .stat-card i { float: right; font-size: 2rem; opacity: 0.2; }
+
+        /* Chat Management */
+        .chat-panel { background: #1e1e1e; border-radius: 10px; border: 1px solid #333; display: flex; flex-direction: column; height: 600px; }
+        .panel-header { padding: 15px 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .search-bar { background: #121212; border: 1px solid #333; padding: 8px 15px; border-radius: 5px; color: white; width: 300px; }
+        
+        .chat-list { flex: 1; overflow-y: auto; padding: 0; }
+        .chat-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #2a2a2a; transition: 0.2s; }
+        .chat-item:hover { background: #252525; }
+        .msg-content { display: flex; flex-direction: column; gap: 5px; }
+        .msg-user { color: var(--primary); font-weight: bold; font-size: 0.9rem; }
+        .msg-text { color: #ddd; font-size: 0.95rem; }
+        .msg-meta { font-size: 0.75rem; color: #666; }
+        
+        .actions { display: flex; gap: 10px; }
+        .btn-icon { background: transparent; border: 1px solid #444; color: #aaa; width: 32px; height: 32px; border-radius: 5px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn-icon:hover { border-color: #666; color: white; }
+        .btn-icon.delete:hover { background: rgba(255, 71, 87, 0.2); border-color: var(--primary); color: var(--primary); }
+        .btn-icon.ban:hover { background: rgba(255, 0, 0, 0.2); border-color: red; color: red; }
+        .btn-icon.temp:hover { background: rgba(255, 165, 2, 0.2); border-color: orange; color: orange; }
+
+        /* System Message Area */
+        .system-area { margin-top: 20px; background: #1e1e1e; padding: 20px; border-radius: 10px; border: 1px solid #333; }
+        .system-form { display: flex; gap: 10px; margin-top: 10px; }
+        .system-form input { flex: 1; background: #121212; border: 1px solid #333; padding: 12px; border-radius: 5px; color: white; }
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 0 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-danger-text { color: #ff4757; background: transparent; border: 1px solid #ff4757; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
+        .btn-danger-text:hover { background: #ff4757; color: white; }
+
+        /* Reports View */
+        .view-section { display: none; flex: 1; flex-direction: column; }
+        .view-section.active { display: flex; }
+        .report-card { background: #252525; border-left: 4px solid orange; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
+        .report-reason { color: #ddd; font-style: italic; margin: 5px 0; }
+        .report-meta { font-size: 0.8rem; color: #888; }
+
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); z-index: 1000; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+    </style>
+</head>
+<body>
+
+    <!-- Login Simple -->
+    <div id="login-overlay" class="login-overlay">
+        <h2 style="margin-bottom: 20px;">Acceso Administrativo</h2>
+        <input type="password" id="admin-pass" placeholder="Contraseña" style="padding: 10px; border-radius: 5px; border: none; margin-bottom: 10px;">
+        <button onclick="checkLogin()" class="btn-main">Entrar</button>
+    </div>
+
+    <!-- Panel Principal -->
+    <div id="admin-panel" style="display: none; width: 100%; height: 100%;">
+        
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-broadcast-tower"></i> Radio Admin
+            </div>
+            <a href="#" class="menu-item active" onclick="switchView('chat', this)"><i class="fas fa-comments"></i> Chat en Vivo</a>
+            <a href="#" class="menu-item" onclick="switchView('reports', this)"><i class="fas fa-flag"></i> Reportes <span id="report-badge" style="background:red; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none;">New</span></a>
+            <a href="../../index.html" class="menu-item"><i class="fas fa-external-link-alt"></i> Ir a la Radio</a>
+            <div style="flex: 1;"></div>
+            <div class="menu-item" style="font-size: 0.8rem; color: #666;">v1.2.0 Stable</div>
+        </div>
+
+        <!-- Contenido -->
+        <div class="main-content">
+            <div class="top-header">
+                <h2 style="font-size: 1.2rem;">Moderación de Chat</h2>
+                <div class="status-badge"><i class="fas fa-circle" style="font-size: 8px;"></i> Servidor Online</div>
+            </div>
+
+            <!-- VISTA CHAT -->
+            <div id="view-chat" class="dashboard-container view-section active">
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Oyentes Conectados</h3>
+                        <div class="value" id="admin-listeners">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-comment-alt"></i>
+                        <h3>Mensajes Totales</h3>
+                        <div class="value" id="total-messages">0</div>
+                    </div>
+                </div>
+
+                <!-- Chat Manager -->
+                <div class="chat-panel">
+                    <div class="panel-header">
+                        <input type="text" class="search-bar" id="search-input" placeholder="Buscar mensaje o usuario..." onkeyup="filterMessages()">
+                        <button class="btn-danger-text" onclick="clearChat()"><i class="fas fa-trash"></i> Limpiar Chat</button>
+                    </div>
+                    <div class="chat-list" id="admin-chat-list">
+                        <!-- Mensajes dinámicos -->
+                    </div>
+                </div>
+
+                <!-- System Message -->
+                <div class="system-area">
+                    <h3 style="font-size: 1rem; margin-bottom: 10px; color: var(--primary);">📢 Enviar Anuncio Global</h3>
+                    <div class="system-form">
+                        <input type="text" id="system-msg" placeholder="Escribe un mensaje oficial del sistema...">
+                        <button class="btn-primary" onclick="sendSystemMessage()">Enviar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA REPORTES -->
+            <div id="view-reports" class="dashboard-container view-section">
+                <h2 style="margin-bottom: 20px;">Reportes de Usuarios</h2>
+                <div id="reports-list">
+                    <div style="color:#666; text-align:center; padding:20px;">No hay reportes activos.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Lógica del Admin ---
+        const socket = io(); // Conectar al servidor
+        let allMessages = []; // Copia local para filtrar
+
+        // 1. Login Simple (Cliente)
+        function checkLogin() {
+            const pass = document.getElementById('admin-pass').value;
+            if(pass === "admin123") { // CONTRASEÑA SIMPLE
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'flex'; // Flex para el layout
+                loadChat();
+                socket.emit('admin request reports'); // Cargar reportes
+            } else {
+                alert("Contraseña incorrecta");
+            }
+        }
+
+        // 2. Cargar Chat
+        function loadChat() {
+            socket.emit('request full history'); // Pedir todo el historial
+        }
+
+        const chatList = document.getElementById('admin-chat-list');
+        const reportsList = document.getElementById('reports-list');
+        const listenersCount = document.getElementById('admin-listeners');
+        const totalMessagesCount = document.getElementById('total-messages');
+
+        // Función para agregar mensaje a la lista admin
+        function addAdminMessage(msg) {
+            allMessages.push(msg); // Guardar en memoria local
+            renderMessage(msg);
+            updateStats();
+        }
+
+        function renderMessage(msg) {
+            const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '--:--';
+            const div = document.createElement('div');
+            div.className = 'chat-item';
+            div.dataset.id = msg.id;
+            div.innerHTML = `
+                <div class="msg-content">
+                    <span class="msg-user">${msg.user} ${msg.isSystem ? '<span style="background:var(--primary); color:white; padding:2px 5px; border-radius:3px; font-size:0.7rem;">SISTEMA</span>' : ''}</span>
+                    <span class="msg-text">${msg.text}</span>
+                    <span class="msg-meta">${time} | ID: ${msg.id.substr(0, 8)}...</span>
+                </div>
+                <div class="actions">
+                    <button class="btn-icon temp" onclick="tempBanUser('${msg.id}')" title="Suspensión Temporal"><i class="fas fa-clock"></i></button>
+                    <button class="btn-icon ban" onclick="banUser('${msg.id}')" title="Banear IP del Usuario"><i class="fas fa-ban"></i></button>
+                    <button class="btn-icon delete" onclick="deleteMessage('${msg.id}')" title="Borrar Mensaje"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `;
+            chatList.appendChild(div);
+            chatList.scrollTop = chatList.scrollHeight;
+        }
+
+        function updateStats() {
+            totalMessagesCount.innerText = allMessages.length;
+        }
+
+        // Renderizar Reporte
+        function addReport(report) {
+            // Si es el primer reporte, limpiar el mensaje de "No hay reportes"
+            if (reportsList.innerHTML.includes('No hay reportes')) reportsList.innerHTML = '';
+
+            const div = document.createElement('div');
+            div.className = 'report-card';
+            div.innerHTML = `
+                <div><strong>Reportado:</strong> ${report.reportedMsg.user}: "${report.reportedMsg.text}"</div>
+                <div class="report-reason">" ${report.reason} "</div>
+                <div class="report-meta">Reportado hace: ${Math.floor((Date.now() - report.timestamp)/60000)} min</div>
+            `;
+            reportsList.prepend(div); // Lo más nuevo arriba
+        }
+
+        // Eventos del Socket
+        socket.on('full history', (msgs) => {
+            chatList.innerHTML = '';
+            allMessages = []; // Resetear local
+            msgs.forEach(addAdminMessage);
+        });
+
+        socket.on('chat message', (msg) => {
+            addAdminMessage(msg);
+        });
+
+        socket.on('all reports', (reports) => {
+            if(reports.length > 0) reportsList.innerHTML = '';
+            reports.forEach(addReport);
+        });
+        socket.on('new report', (report) => {
+            addReport(report);
+            document.getElementById('report-badge').style.display = 'inline-block'; // Notificación
+        });
+
+        socket.on('user count', (count) => {
+            listenersCount.innerText = count;
+        });
+
+        socket.on('message deleted', (id) => {
+            const item = chatList.querySelector(`div[data-id="${id}"]`);
+            if(item) {
+                item.style.opacity = '0';
+                setTimeout(() => item.remove(), 200); // Animación de salida
+                allMessages = allMessages.filter(m => m.id !== id);
+                updateStats();
+            }
+        });
+
+        socket.on('chat cleared', () => {
+            chatList.innerHTML = '';
+            allMessages = [];
+            updateStats();
+        });
+
+        // --- Acciones ---
+
+        // Borrar mensaje individual
+        window.deleteMessage = function(id) {
+            if(confirm('¿Borrar este mensaje?')) {
+                socket.emit('admin delete message', id);
+            }
+        }
+
+        // Baneo Temporal
+        window.tempBanUser = function(id) {
+            const minutes = prompt("¿Por cuántos MINUTOS quieres suspender a este usuario?", "60");
+            if(minutes && !isNaN(minutes)) {
+                socket.emit('admin temp ban', { msgId: id, minutes: parseInt(minutes) });
+                alert("Usuario suspendido temporalmente.");
+            }
+        }
+
+        // Banear usuario
+        window.banUser = function(id) {
+            if(confirm('¿BLOQUEAR a este usuario permanentemente por su IP?')) {
+                socket.emit('admin ban user', id);
+            }
+        }
+
+        // Borrar todo
+        window.clearChat = function() {
+            if(confirm('¿ESTÁS SEGURO? Esto borrará todo el historial de chat para todos los usuarios.')) {
+                socket.emit('admin clear chat');
+            }
+        }
+
+        // Enviar mensaje de sistema
+        window.sendSystemMessage = function() {
+            const input = document.getElementById('system-msg');
+            const text = input.value;
+            if(text) {
+                socket.emit('admin system message', text);
+                input.value = '';
+            }
+        }
+
+        // Filtro de búsqueda
+        window.filterMessages = function() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            chatList.innerHTML = ''; // Limpiar vista
+            
+            const filtered = allMessages.filter(msg => 
+                msg.user.toLowerCase().includes(term) || 
+                msg.text.toLowerCase().includes(term)
+            );
+            
+            filtered.forEach(renderMessage);
+        }
+
+        // Cambiar Vistas (Tabs)
+        window.switchView = function(viewName, btn) {
+            // Ocultar todas
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            // Mostrar seleccionada
+            document.getElementById('view-' + viewName).classList.add('active');
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>

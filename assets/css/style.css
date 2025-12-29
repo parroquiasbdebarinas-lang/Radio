@@ -1,0 +1,353 @@
+:root {
+    --primary: #ff4757;
+    --dark: #0f0f0f;
+    --light: #f1f2f6;
+    --gray: #2f3542;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+body { 
+    background-color: var(--dark); 
+    color: var(--light); 
+    overflow-x: hidden;
+    animation: slideUpFade 1s ease-out;
+}
+
+/* Navegación */
+.navbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 5%; background: rgba(0,0,0,0.8);
+}
+.logo { display: flex; align-items: center; }
+.logo a { display: flex; align-items: center; text-decoration: none; color: var(--light); }
+.logo img { height: 80px; margin-right: 15px; } /* Logo más grande */
+.logo span { 
+    font-size: 20px; font-weight: bold; letter-spacing: 1px; 
+    color: var(--light); 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Sombra para resaltar */
+}
+.nav-links { display: flex; list-style: none; }
+.nav-links li a { color: white; text-decoration: none; margin-left: 20px; transition: 0.3s; }
+.nav-links li a:hover, .nav-links li a.active { color: var(--primary); }
+
+/* Hero Section */
+.hero {
+    height: 70vh;
+    background: linear-gradient(rgba(0,0,0,0.6), var(--dark)), 
+                url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover; background-position: center;
+    display: flex; align-items: center; padding: 0 10%;
+}
+.badge { background: var(--primary); padding: 5px 10px; border-radius: 5px; font-size: 12px; }
+.listener-badge { 
+    background: rgba(0,0,0,0.6); padding: 5px 10px; border-radius: 5px; 
+    font-size: 14px; margin-left: 10px; border: 1px solid var(--light);
+    display: inline-flex; align-items: center; gap: 5px;
+}
+
+.hero h1 { font-size: 3.5rem; margin: 15px 0; }
+.btn-main { 
+    background: var(--primary); border: none; padding: 15px 30px; 
+    color: white; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 20px;
+}
+
+/* Reproductor Fijo */
+.player-container {
+    position: fixed; bottom: 0; width: 100%; height: 90px;
+    background: var(--gray); 
+    /* Quitamos flex y padding para que el iframe llene todo */
+    padding: 0; border-top: 3px solid var(--primary);
+    overflow: hidden; /* Para evitar bordes extraños */
+}
+
+.radio-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* --- Estilos Nuevos para Páginas Internas --- */
+
+/* Hero más pequeño para subpáginas */
+.hero-small {
+    height: 40vh; /* Menos altura que el inicio */
+}
+
+/* Sección de Horarios */
+.schedule-section {
+    padding: 50px 5%;
+    padding-bottom: 120px; /* Espacio para que el reproductor no tape el contenido */
+    text-align: center;
+}
+
+/* Títulos de Sección */
+.section-title {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+/* --- Pestañas (Tabs) --- */
+.tabs-container {
+    display: flex; justify-content: center; gap: 15px; margin: 30px 0;
+}
+
+.tab-btn {
+    background: transparent; border: 2px solid var(--primary); color: var(--light);
+    padding: 10px 25px; border-radius: 25px; cursor: pointer; font-size: 1.1rem;
+    transition: 0.3s;
+}
+
+.tab-btn.active, .tab-btn:hover {
+    background: var(--primary); color: white;
+}
+
+.tab-content {
+    animation: slideUpFade 0.5s ease-out; /* Animación al cambiar de pestaña */
+}
+
+.schedule-grid {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;
+    margin-top: 30px;
+}
+
+.card {
+    background: var(--gray); padding: 30px; border-radius: 15px;
+    width: 300px; transition: 0.3s; border-top: 4px solid transparent;
+}
+.card:hover { transform: translateY(-5px); border-top: 4px solid var(--primary); }
+
+/* Tarjeta destacada (Domingos) */
+.card.highlight { border: 1px solid var(--primary); box-shadow: 0 0 15px rgba(255, 71, 87, 0.2); }
+
+.icon-card { font-size: 40px; color: var(--primary); margin-bottom: 15px; }
+
+/* --- Sección de Contacto --- */
+.contact-section {
+    padding: 50px 5%; padding-bottom: 120px;
+    display: flex; flex-wrap: wrap; gap: 30px; justify-content: center;
+}
+.contact-info, .contact-map {
+    flex: 1; min-width: 300px;
+    background: var(--gray); padding: 30px; border-radius: 15px;
+}
+.contact-info h3 { color: var(--primary); margin-bottom: 20px; }
+.contact-item { margin-bottom: 15px; display: flex; align-items: center; gap: 15px; font-size: 1.1rem; }
+.contact-item i { color: var(--primary); width: 25px; text-align: center; }
+.contact-map iframe { width: 100%; height: 350px; border-radius: 10px; border: none; }
+
+/* Nueva Animación de carga (Deslizar hacia arriba) */
+@keyframes slideUpFade {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Scrollbar Personalizado (Chrome, Edge, Safari) --- */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    border-radius: 6px;
+    border: 3px solid var(--dark); /* Crea un borde para que se vea flotante */
+}
+
+/* --- Chat Section --- */
+.chat-section {
+    padding: 50px 5%;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.chat-container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: var(--gray);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative; /* Para posicionar el panel de emojis */
+}
+
+.chat-messages {
+    height: 300px;
+    overflow-y: auto;
+    padding: 20px;
+    text-align: left;
+    display: flex; flex-direction: column; gap: 10px;
+}
+
+.message {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    animation: fadeIn 0.3s;
+}
+.message strong { color: var(--primary); margin-right: 5px; }
+/* Mensajes de Sistema (Admin) */
+.message.system { background: rgba(255, 71, 87, 0.2); color: #ffcccb; text-align: center; font-size: 0.9rem; border: 1px solid var(--primary); }
+
+.chat-form {
+    display: flex; padding: 15px; background: rgba(0, 0, 0, 0.2); gap: 10px;
+}
+
+.chat-form input {
+    padding: 10px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: white; outline: none;
+}
+.chat-form input:focus { border-color: var(--primary); }
+
+#username { width: 30%; }
+#message { width: 70%; }
+
+/* Botones del formulario (Enviar y Emojis) */
+.chat-form button {
+    background: var(--primary); border: none;
+    width: 40px; height: 40px; border-radius: 50%;
+    color: white; cursor: pointer; transition: 0.3s;
+    display: flex; align-items: center; justify-content: center;
+}
+.chat-form button:hover { transform: scale(1.1); }
+
+/* Botón de Emojis específico (Sobrescribe el color) */
+.chat-form .emoji-btn {
+    background: rgba(255, 255, 255, 0.1); 
+    margin-right: 5px;
+}
+.chat-form .emoji-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Panel de Emojis */
+.emoji-picker {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    bottom: 80px; /* Encima del formulario */
+    right: 20px;
+    background: var(--gray);
+    border: 1px solid var(--primary);
+    border-radius: 10px;
+    width: 320px; /* Ancho fijo */
+    height: 250px; /* Altura fija */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    z-index: 100;
+    flex-direction: column; /* Apilar pestañas y contenido */
+    overflow: hidden;
+}
+.emoji-picker.active { display: flex; }
+
+/* Pestañas de Categorías */
+.emoji-tabs {
+    display: flex;
+    background: rgba(0,0,0,0.2);
+    padding: 5px;
+    overflow-x: auto; /* Scroll horizontal si hay muchas categorías */
+}
+.emoji-tab-btn {
+    background: transparent; border: none; font-size: 1.2rem;
+    padding: 5px 10px; cursor: pointer; opacity: 0.5; transition: 0.2s;
+    border-bottom: 2px solid transparent;
+}
+.emoji-tab-btn:hover, .emoji-tab-btn.active {
+    opacity: 1; border-bottom-color: var(--primary);
+}
+
+/* Contenedor de Emojis (Scrollable) */
+.emoji-grid-container {
+    flex: 1; overflow-y: auto; padding: 10px;
+}
+
+/* Categoría individual (Grid) */
+.emoji-category {
+    display: none; /* Ocultas por defecto */
+    grid-template-columns: repeat(7, 1fr); gap: 5px;
+}
+.emoji-category.active { display: grid; }
+
+.emoji-item { font-size: 1.4rem; cursor: pointer; padding: 5px; border-radius: 5px; transition: 0.2s; text-align: center; }
+.emoji-item:hover { background: rgba(255, 255, 255, 0.1); transform: scale(1.2); }
+
+/* Animación simple para los mensajes */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- Barra de Navegación Móvil --- */
+.mobile-nav {
+    display: none; /* Oculto por defecto, se activa con media query */
+    position: fixed;
+    bottom: 90px; /* Justo encima del reproductor de radio */
+    left: 0;
+    width: 100%;
+    height: 65px;
+    background: var(--gray);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    justify-content: space-around;
+    align-items: center;
+    z-index: 999;
+}
+.mobile-nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--light);
+    text-decoration: none;
+    font-size: 11px;
+    opacity: 0.7;
+    transition: opacity 0.3s, color 0.3s;
+    flex-grow: 1; /* Para que ocupen el mismo espacio */
+    height: 100%;
+}
+.mobile-nav-link i {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+.mobile-nav-link.active, .mobile-nav-link:hover {
+    color: var(--primary);
+    opacity: 1;
+}
+
+/* --- Responsividad (Móviles y Tablets) --- */
+@media (max-width: 768px) {
+    /* Ocultar la barra de navegación de escritorio */
+    .navbar {
+        display: none;
+    }
+    
+    /* Mostrar la barra de navegación móvil */
+    .mobile-nav {
+        display: flex;
+    }
+
+    /* Hero: Ajustar textos y altura */
+    .hero {
+        height: auto; /* Altura automática */
+        min-height: 60vh;
+        padding: 60px 5%;
+        text-align: center;
+    }
+
+    .hero h1 { font-size: 2.5rem; } /* Texto más pequeño */
+    .hero-content { width: 100%; }
+
+    /* Añadir espacio en la parte inferior para que el contenido no quede oculto */
+    .schedule-section, .contact-section {
+        padding-bottom: 170px; /* 90px player + 65px nav + 15px margen */
+    }
+
+    /* Tarjetas y Secciones: Ocupar ancho completo */
+    .card, .contact-info, .contact-map {
+        width: 100%;
+        min-width: auto; /* Quitar restricción de ancho mínimo */
+    }
+}

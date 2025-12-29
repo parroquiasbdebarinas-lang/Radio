@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <!-- Página Principal -->
+   <url>
+      <loc>https://www.tudominio.com/</loc>
+      <lastmod>2025-12-28</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1.0</priority>
+   </url>
+   <!-- Horarios -->
+   <url>
+      <loc>https://www.tudominio.com/assets/html/horarios.html</loc>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <!-- Eventos -->
+   <url>
+      <loc>https://www.tudominio.com/assets/html/events.html</loc>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+   </url>
+   <!-- Contacto -->
+   <url>
+      <loc>https://www.tudominio.com/assets/html/contacto.html</loc>
+      <changefreq>monthly</changefreq>
+      <priority>0.5</priority>
+   </url>
+</urlset>

@@ -1,0 +1,23 @@
+[
+  {
+    "user": "Daniel Guerra",
+    "text": "hola",
+    "id": "1766969464688vuh9nf5sx",
+    "timestamp": 1766969464688,
+    "ip": "::1"
+  },
+  {
+    "id": "1766969474342",
+    "user": "SISTEMA",
+    "text": "El usuario Daniel Guerra ha sido suspendido temporalmente (1 min).",
+    "isSystem": true,
+    "timestamp": 1766969474342
+  },
+  {
+    "user": "a",
+    "text": "****",
+    "id": "1766970089557vue4g50l3",
+    "timestamp": 1766970089557,
+    "ip": "::1"
+  }
+]

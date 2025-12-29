@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Santa Bárbara 103.5 FM - Barinas</title>
+    <!-- Icono de la pestaña (Favicon) -->
+    <link rel="icon" href="assets/images/logo/logo.png" type="image/png">
+    <!-- Vinculamos tus estilos -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Font Awesome para los iconos (Play, Pausa, Volumen) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Socket.io Client (Para el chat) -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+
+    <!-- Barra de Navegación -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="assets/images/logo/logo.png" alt="Santa Bárbara">
+            <span>Radio Santa Bárbara 103.5 FM</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Inicio</a></li>
+            <li><a href="assets/html/horarios.html">Horarios de Misa</a></li>
+            <li><a href="assets/html/events.html">Eventos</a></li>
+            <li><a href="assets/html/contacto.html">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <!-- Sección Principal (Hero) -->
+    <header class="hero">
+        <div class="hero-content">
+            <span class="badge">EN VIVO 🔴</span>
+            <span class="listener-badge"><i class="fas fa-users"></i> Oyentes: <span id="user-count">0</span></span>
+            <h1>La Voz de la Fe <br> en Santa Barbara</h1>
+            <p>Transmitiendo esperanza y oración desde la Parroquia Santa Bárbara.</p>
+            <!-- Este botón también activa el reproductor -->
+            <button class="btn-main" onclick="document.getElementById('radio-player').scrollIntoView({behavior: 'smooth'})">ESCUCHAR AHORA</button>
+        </div>
+    </header>
+
+    <!-- Sección de Chat en Vivo -->
+    <section class="chat-section">
+        <h2 class="section-title">Chat en Vivo</h2>
+        <p>Comparte con nuestra comunidad en tiempo real</p>
+        
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message system">Bienvenido al chat de Radio Santa Bárbara.</div>
+            </div>
+            <form class="chat-form" id="chat-form">
+                <input type="text" id="username" placeholder="Tu Nombre" required maxlength="15">
+                <input type="text" id="message" placeholder="Escribe un mensaje..." required autocomplete="off">
+                <button type="button" id="emoji-btn" class="emoji-btn"><i class="far fa-smile"></i></button>
+                <button type="submit"><i class="fas fa-paper-plane"></i></button>
+            </form>
+            <div class="emoji-picker" id="emoji-picker"></div>
+        </div>
+    </section>
+
+    <!-- Sección de Programación Radial -->
+    <section class="schedule-section">
+        <h2 class="section-title">Nuestra Programación</h2>
+        <p>Sintoniza nuestros espacios de evangelización, música y cultura</p>
+        
+        <!-- Botones de Pestañas -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="openTab(event, 'programacion')">Programación</button>
+            <button class="tab-btn" onclick="openTab(event, 'locutores')">Locutores</button>
+        </div>
+
+        <!-- Contenido Pestaña 1: Programación -->
+        <div id="programacion" class="tab-content" style="display: block;">
+            <div class="schedule-grid">
+                <!-- Programa 1 -->
+                <div class="card">
+                    <i class="fas fa-coffee icon-card"></i>
+                    <h3>Despertar con Fe</h3>
+                    <p><strong>Lunes a Viernes</strong></p>
+                    <p>06:00 AM - 08:00 AM</p>
+                    <p>Música alegre y oración matutina.</p>
+                </div>
+
+                <!-- Programa 2 -->
+                <div class="card">
+                    <i class="fas fa-sun icon-card"></i>
+                    <h3>El Ángelus</h3>
+                    <p><strong>Todos los días</strong></p>
+                    <p>12:00 PM</p>
+                    <p>Reflexión y saludo a la Virgen.</p>
+                </div>
+
+                <!-- Programa 3 (Destacado) -->
+                <div class="card highlight">
+                    <i class="fas fa-praying-hands icon-card"></i>
+                    <h3>Santo Rosario</h3>
+                    <p><strong>Lunes a Sábado</strong></p>
+                    <p>06:00 PM</p>
+                    <p>Unidos en oración por las familias.</p>
+                </div>
+
+                <!-- Programa 4 -->
+                <div class="card">
+                    <i class="fas fa-music icon-card"></i>
+                    <h3>Noche de Alabanza</h3>
+                    <p><strong>Viernes</strong></p>
+                    <p>08:00 PM - 10:00 PM</p>
+                    <p>Lo mejor de la música católica joven.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenido Pestaña 2: Locutores -->
+        <div id="locutores" class="tab-content" style="display: none;">
+            <div class="schedule-grid">
+                <!-- Locutor 1 -->
+                <div class="card">
+                    <i class="fas fa-microphone icon-card"></i>
+                    <h3>Padre Jimmy</h3>
+                    <p><strong>Director General</strong></p>
+                    <p>La voz guía de nuestra parroquia.</p>
+                </div>
+                <!-- Locutor 2 -->
+                <div class="card">
+                    <i class="fas fa-user icon-card"></i>
+                    <h3>María González</h3>
+                    <p><strong>Locutora</strong></p>
+                    <p>Acompaña tus mañanas con alegría.</p>
+                </div>
+                <!-- Locutor 3 -->
+                <div class="card">
+                    <i class="fas fa-music icon-card"></i>
+                    <h3>Juan Pérez</h3>
+                    <p><strong>Musicalizador</strong></p>
+                    <p>Encargado de la selección musical.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reproductor Fijo (Audio Player) -->
+    <div class="player-container" id="radio-player">
+        <iframe title="Reproductor de Radio Tropirumba Stereo" src="https://serverstreamgroup.biz:2020/AudioPlayer/9736?mount=&amp;" class="radio-iframe"></iframe>
+    </div>
+
+    <!-- Barra de Navegación Móvil -->
+    <nav class="mobile-nav">
+        <a href="#" class="mobile-nav-link active">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="assets/html/horarios.html" class="mobile-nav-link">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Horarios</span>
+        </a>
+        <a href="assets/html/events.html" class="mobile-nav-link">
+            <i class="fas fa-star"></i>
+            <span>Eventos</span>
+        </a>
+        <a href="assets/html/contacto.html" class="mobile-nav-link">
+            <i class="fas fa-envelope"></i>
+            <span>Contacto</span>
+        </a>
+    </nav>
+
+    <!-- Vinculamos tu lógica de JavaScript -->
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
