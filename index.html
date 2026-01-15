@@ -42,10 +42,14 @@
             <!-- Este botón también activa el reproductor -->
             <button class="btn-main" onclick="document.getElementById('radio-player').scrollIntoView({behavior: 'smooth'})">ESCUCHAR AHORA</button>
         </div>
-        <!-- Reproductor de Radio -->
-        <div id="radio-player" style="display: flex; justify-content: center;">
-            <div class="extassis" id="extassis" style="width: 400px; height:400px; -webkit-border-top-left-radius: 0px; -webkit-border-top-right-radius: 0px; -webkit-border-bottom-right-radius: 0px; -webkit-border-bottom-left-radius: 0px; -moz-border-radius-topleft: 0px; -moz-border-radius-topright: 0px; -moz-border-radius-bottomright: 0px; -moz-border-radius-bottomleft: 0px; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; border: none;" data-userinterface="big" data-backgroundcolor="linear-gradient(135deg, rgba(0, 0, 0, 0.3) 100%, rgba(255, 255, 255, 0.3) 0%)" data-fontcolor="#ffffff" data-hightlightcolor="#ff0000" data-fontname="Montserrat" data-googlefont="Montserrat" data-fontratio="0.4" data-radioname="Radio Santa Bárbara" data-scroll="true" data-coverimage="assets/images/logo/logo.png" data-onlycoverimage="true" data-coverstyle="animated" data-usevisualizer="real" data-visualizertype="6" data-metadatatechnic="corsproxy" data-corsproxy="" data-usestreamcorsproxy="true" data-streamurl="http://serverstreamgroup.biz:2020/AudioPlayer/9736?mount=&" data-streamtype="shoutcast2" data-shoutcastpath="/live" data-shoutcastid="1" data-metadatainterval="20000" data-volume="100" data-autoplay="true" data-displayliveicon="true" data-debug="false" data-multicolorvisualizer="true" data-color1="#ff0000" data-color2="#06ff00" data-color3="#fff600" data-color4="#0054ff" data-visualizeropacity="0.9" data-displayvisualizericon="true"> </div>
-        </div>
+<div id="radio-player" style="display: flex; justify-content: center;">
+    <iframe src="https://radiosantabarbara103.radio12345.com/" 
+            width="100%" 
+            height="350" 
+            frameborder="0" 
+            style="border-radius: 20px; border: 2px solid #ffffff;">
+    </iframe>
+</div>
     </header>
 
     <!-- Sección de Chat en Vivo -->

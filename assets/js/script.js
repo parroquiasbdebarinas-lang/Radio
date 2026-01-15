@@ -27,14 +27,22 @@ const chatForm = document.getElementById('chat-form');
 if (chatForm) {
     // --- CONFIGURACIÓN DE CONEXIÓN ---
     // Detectar si estamos en local o en producción
-    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
     
     // IMPORTANTE: Cuando subas el backend a Render, copia la URL que te den y pégala aquí abajo 👇
-    const productionUrl = 'https://backend-8o1z.onrender.com'; 
+     
 
-    const socket = io(isLocal ? undefined : productionUrl); 
+    // Configuración de conexión forzada para que no falle el envío
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const productionUrl = 'https://backend-8o1z.onrender.com'; 
+
+const socket = io(isLocal ? 'http://localhost:3000' : productionUrl, {
+    transports: ['websocket', 'polling'],
+    upgrade: true,
+    reconnection: true
+});
     // ---------------------------------
-
+    
     const chatMessages = document.getElementById('chat-messages');
     const usernameInput = document.getElementById('username');
     const messageInput = document.getElementById('message');
